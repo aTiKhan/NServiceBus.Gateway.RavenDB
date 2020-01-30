@@ -1,39 +1,58 @@
-﻿using System;
+﻿using NServiceBus.Extensibility;
+using Raven.Client.Documents;
+using System;
 using System.Threading.Tasks;
 
 namespace NServiceBus.Gateway.RavenDB
 {
     class RavenDeduplicationSession : IDeduplicationSession
     {
-        public bool IsDuplicate => throw new NotImplementedException();
-
-        public Task MarkAsDispatched()
+        public bool IsDuplicate
         {
-            throw new NotImplementedException();
+            get
+            {
+                using (var session = documentStore.OpenSession())
+                {
+                    return session.Load<GatewayMessage>(EscapeMessageId(messageId)) != null;
+                }
+            }
         }
 
-        #region IDisposable Support
-        bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
+        public async Task MarkAsDispatched()
         {
-            if (!disposedValue)
+            using (var session = documentStore.OpenAsyncSession())
             {
-                if (disposing)
+                var gatewayMessage = await session.LoadAsync<GatewayMessage>(EscapeMessageId(messageId));
+                if (gatewayMessage == null)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    await session.StoreAsync(new GatewayMessage()
+                    {
+                        Id = EscapeMessageId(messageId),
+                        TimeReceived = DateTime.UtcNow
+                    });
                 }
-
-                // TODO: set large fields to null.
-
-                disposedValue = true;
             }
+        }
+
+        public RavenDeduplicationSession(IDocumentStore documentStore, string messageId, ContextBag context)
+        {
+            this.documentStore = documentStore;
+            this.messageId = messageId;
+            this.context = context;
         }
 
         public void Dispose()
         {
-            Dispose(true);
+
         }
-        #endregion
+
+        static string EscapeMessageId(string messageId)
+        {
+            return messageId.Replace("\\", "_");
+        }
+
+        readonly IDocumentStore documentStore;
+        readonly string messageId;
+        readonly ContextBag context;
     }
 }

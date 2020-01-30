@@ -26,6 +26,10 @@ namespace NServiceBus.Gateway.RavenDB
         /// </summary>
         public override void Setup(ReadOnlySettings settings)
         {
+            this.settings = settings;
+
+            //TODO: kick off the clean-up task (as a FeatureStartupTask)
+
             base.Setup(settings);
         }
 
@@ -34,9 +38,12 @@ namespace NServiceBus.Gateway.RavenDB
         /// </summary>
         public override IGatewayDeduplicationStorage CreateStorage(IBuilder builder)
         {
-            return new RavenGatewayDeduplicationStorage(documentStoreFactory);
+            var documentStore = documentStoreFactory(builder, settings);
+
+            return new RavenGatewayDeduplicationStorage(documentStore);
         }
 
+        ReadOnlySettings settings;
         readonly Func<IBuilder, ReadOnlySettings, IDocumentStore> documentStoreFactory;
     }
 }
