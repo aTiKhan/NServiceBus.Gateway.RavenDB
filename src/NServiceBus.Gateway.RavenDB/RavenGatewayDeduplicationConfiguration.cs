@@ -40,6 +40,8 @@ namespace NServiceBus.Gateway.RavenDB
         {
             var documentStore = documentStoreFactory(builder, settings);
 
+            //TODO: ensure cluster configuration has only 1 leader
+
             return new RavenGatewayDeduplicationStorage(documentStore);
         }
 
