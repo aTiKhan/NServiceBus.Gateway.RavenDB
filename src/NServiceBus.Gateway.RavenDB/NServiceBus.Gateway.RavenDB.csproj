@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <AssemblyName>NServiceBus.Gateway.RavenDB</AssemblyName>
     <RootNamespace>NServiceBus.Gateway.RavenDB</RootNamespace>
     <SignAssembly>true</SignAssembly>
@@ -13,6 +13,7 @@
     <PackageReference Include="NServiceBus" Version="[7.0.0, 8.0.0)" />
     <PackageReference Include="NServiceBus.Gateway" Version="3.1.0" />
     <PackageReference Include="Particular.Packaging" Version="0.5.0" PrivateAssets="All" />
+    <PackageReference Include="RavenDB.Client" Version="[4.2.0, 5.0.0)" />
   </ItemGroup>
 
 </Project>
