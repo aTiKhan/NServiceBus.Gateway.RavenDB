@@ -1,6 +1,5 @@
 ﻿using NServiceBus.Extensibility;
 using Raven.Client.Documents;
-using System;
 using System.Threading.Tasks;
 
 namespace NServiceBus.Gateway.RavenDB
@@ -14,9 +13,12 @@ namespace NServiceBus.Gateway.RavenDB
 
         public bool SupportsDistributedTransactions => false;
 
-        public Task<IDeduplicationSession> CheckForDuplicate(string messageId, ContextBag context)
+        public async Task<IDeduplicationSession> CheckForDuplicate(string messageId, ContextBag context)
         {
-            return Task.FromResult<IDeduplicationSession>(new RavenDeduplicationSession(documentStore, messageId, context));
+            var session = documentStore.OpenAsyncSession();
+            var isDuplicate = await session.LoadAsync<GatewayMessage>(MessageIdHelper.EscapeMessageId(messageId)) != null;
+
+            return new RavenDeduplicationSession(session, isDuplicate, messageId);
         }
 
         readonly IDocumentStore documentStore;

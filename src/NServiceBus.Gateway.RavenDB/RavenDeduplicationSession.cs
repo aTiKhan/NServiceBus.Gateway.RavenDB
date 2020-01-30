@@ -1,58 +1,53 @@
-﻿using NServiceBus.Extensibility;
-using Raven.Client.Documents;
+﻿using Raven.Client.Documents.Session;
 using System;
 using System.Threading.Tasks;
 
 namespace NServiceBus.Gateway.RavenDB
 {
-    class RavenDeduplicationSession : IDeduplicationSession
+    sealed class RavenDeduplicationSession : IDeduplicationSession
     {
-        public bool IsDuplicate
-        {
-            get
-            {
-                using (var session = documentStore.OpenSession())
-                {
-                    return session.Load<GatewayMessage>(EscapeMessageId(messageId)) != null;
-                }
-            }
-        }
+        public bool IsDuplicate { get; }
 
         public async Task MarkAsDispatched()
         {
-            using (var session = documentStore.OpenAsyncSession())
+            if (!IsDuplicate)
             {
-                var gatewayMessage = await session.LoadAsync<GatewayMessage>(EscapeMessageId(messageId));
-                if (gatewayMessage == null)
+                await session.StoreAsync(new GatewayMessage()
                 {
-                    await session.StoreAsync(new GatewayMessage()
-                    {
-                        Id = EscapeMessageId(messageId),
-                        TimeReceived = DateTime.UtcNow
-                    });
-                }
+                    Id = MessageIdHelper.EscapeMessageId(messageId),
+                    TimeReceived = DateTime.UtcNow
+                });
+                await session.SaveChangesAsync();
             }
         }
 
-        public RavenDeduplicationSession(IDocumentStore documentStore, string messageId, ContextBag context)
+        public RavenDeduplicationSession(IAsyncDocumentSession session, bool isDuplicate, string messageId)
         {
-            this.documentStore = documentStore;
+            this.session = session;
+            IsDuplicate = isDuplicate;
             this.messageId = messageId;
-            this.context = context;
+        }
+
+        void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    session?.Dispose();
+                }
+
+                disposedValue = true;
+            }
         }
 
         public void Dispose()
         {
-
+            Dispose(true);
         }
 
-        static string EscapeMessageId(string messageId)
-        {
-            return messageId.Replace("\\", "_");
-        }
-
-        readonly IDocumentStore documentStore;
+        bool disposedValue = false;
+        readonly IAsyncDocumentSession session;
         readonly string messageId;
-        readonly ContextBag context;
     }
 }
