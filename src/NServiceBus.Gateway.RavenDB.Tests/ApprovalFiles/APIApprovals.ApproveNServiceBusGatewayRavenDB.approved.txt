@@ -2,7 +2,7 @@ namespace NServiceBus.Gateway.RavenDB
 {
     public class RavenGatewayDeduplicationConfiguration : NServiceBus.Gateway.GatewayDeduplicationConfiguration
     {
-        public RavenGatewayDeduplicationConfiguration() { }
+        public RavenGatewayDeduplicationConfiguration(System.Func<NServiceBus.ObjectBuilder.IBuilder, NServiceBus.Settings.ReadOnlySettings, Raven.Client.Documents.IDocumentStore> documentStoreFactory) { }
         public override NServiceBus.Gateway.IGatewayDeduplicationStorage CreateStorage(NServiceBus.ObjectBuilder.IBuilder builder) { }
         public override void Setup(NServiceBus.Settings.ReadOnlySettings settings) { }
     }
