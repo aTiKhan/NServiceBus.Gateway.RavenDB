@@ -1,0 +1,9 @@
+namespace NServiceBus.Gateway.RavenDB
+{
+    public class RavenGatewayDeduplicationConfiguration : NServiceBus.Gateway.GatewayDeduplicationConfiguration
+    {
+        public RavenGatewayDeduplicationConfiguration() { }
+        public override NServiceBus.Gateway.IGatewayDeduplicationStorage CreateStorage(NServiceBus.ObjectBuilder.IBuilder builder) { }
+        public override void Setup(NServiceBus.Settings.ReadOnlySettings settings) { }
+    }
+}

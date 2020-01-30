@@ -1,19 +1,28 @@
 ﻿using NServiceBus.ObjectBuilder;
 using NServiceBus.Settings;
-using System;
 
 namespace NServiceBus.Gateway.RavenDB
 {
-    class RavenGatewayDeduplicationConfiguration : GatewayDeduplicationConfiguration
+    /// <summary>
+    /// Configures the deduplication storage.
+    /// </summary>
+    public class RavenGatewayDeduplicationConfiguration : GatewayDeduplicationConfiguration
     {
+        /// <summary>
+        /// Invoked when the endpoint configuration completed to initialize the storage or
+        ///  verify configuration before the endpoint starts.
+        /// </summary>
         public override void Setup(ReadOnlySettings settings)
         {
             base.Setup(settings);
         }
 
+        /// <summary>
+        /// Creates an instance of the deduplication storage.
+        /// </summary>
         public override IGatewayDeduplicationStorage CreateStorage(IBuilder builder)
         {
-            throw new NotImplementedException();
+            return new RavenGatewayDeduplicationStorage();
         }
     }
 }
