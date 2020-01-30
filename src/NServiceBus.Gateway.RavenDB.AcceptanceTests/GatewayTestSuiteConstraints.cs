@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NServiceBus.Gateway.AcceptanceTests
 {
-    public partial class GatewayTestSuiteConstraints : IGatewayTestSuiteConstraints
+    public partial class GatewayTestSuiteConstraints
     {
         public Task ConfigureDeduplicationStorage(string endpointName, EndpointConfiguration configuration, RunSettings settings)
         {
