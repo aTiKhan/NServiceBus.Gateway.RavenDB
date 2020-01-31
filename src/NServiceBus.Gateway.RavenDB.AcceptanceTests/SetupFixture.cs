@@ -1,4 +1,4 @@
-﻿namespace NServiceBus.Gateway.RavenDB.AcceptanceTests
+﻿namespace NServiceBus.Gateway.AcceptanceTests
 {
     using NUnit.Framework;
 
