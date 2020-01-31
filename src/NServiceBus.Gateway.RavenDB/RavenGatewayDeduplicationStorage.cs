@@ -24,6 +24,6 @@ namespace NServiceBus.Gateway.RavenDB
         }
 
         readonly IDocumentStore documentStore;
-        private readonly TimeSpan deduplicationDataTimeToLive;
+        readonly TimeSpan deduplicationDataTimeToLive;
     }
 }
