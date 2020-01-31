@@ -1,4 +1,5 @@
-﻿using Raven.Client.Documents.Session;
+﻿using Raven.Client;
+using Raven.Client.Documents.Session;
 using System;
 using System.Threading.Tasks;
 
@@ -12,20 +13,27 @@ namespace NServiceBus.Gateway.RavenDB
         {
             if (!IsDuplicate)
             {
-                await session.StoreAsync(new GatewayMessage()
+                var timeReceived = DateTime.UtcNow;
+                var expiry = timeReceived + deduplicationDataTimeToLive;
+
+                var gatewayMessage = new GatewayMessage()
                 {
                     Id = MessageIdHelper.EscapeMessageId(messageId),
-                    TimeReceived = DateTime.UtcNow
-                });
+                    TimeReceived = timeReceived
+                };
+
+                await session.StoreAsync(gatewayMessage);
+                session.Advanced.GetMetadataFor(gatewayMessage)[Constants.Documents.Metadata.Expires] = expiry;
                 await session.SaveChangesAsync();
             }
         }
 
-        public RavenDeduplicationSession(IAsyncDocumentSession session, bool isDuplicate, string messageId)
+        public RavenDeduplicationSession(IAsyncDocumentSession session, bool isDuplicate, string messageId, TimeSpan deduplicationDataTimeToLive)
         {
             this.session = session;
             IsDuplicate = isDuplicate;
             this.messageId = messageId;
+            this.deduplicationDataTimeToLive = deduplicationDataTimeToLive;
         }
 
         void Dispose(bool disposing)
@@ -49,5 +57,6 @@ namespace NServiceBus.Gateway.RavenDB
         bool disposedValue = false;
         readonly IAsyncDocumentSession session;
         readonly string messageId;
+        private readonly TimeSpan deduplicationDataTimeToLive;
     }
 }

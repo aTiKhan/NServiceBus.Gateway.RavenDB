@@ -1,8 +1,10 @@
 ﻿using NServiceBus.ObjectBuilder;
 using NServiceBus.Settings;
 using Raven.Client.Documents;
+using Raven.Client.Documents.Operations.Expiration;
 using Raven.Client.ServerWide.Commands;
 using System;
+using System.Threading.Tasks;
 
 namespace NServiceBus.Gateway.RavenDB
 {
@@ -42,8 +44,18 @@ namespace NServiceBus.Gateway.RavenDB
             var documentStore = documentStoreFactory(builder, settings);
 
             EnsureClusterConfiguration(documentStore);
+            EnableExpirationFeature(documentStore).GetAwaiter().GetResult();
 
-            return new RavenGatewayDeduplicationStorage(documentStore);
+            return new RavenGatewayDeduplicationStorage(documentStore, DeduplicationDataTimeToLive);
+        }
+
+        static Task EnableExpirationFeature(IDocumentStore documentStore)
+        {
+            return documentStore.Maintenance.SendAsync(new ConfigureExpirationOperation(new ExpirationConfiguration
+            {
+                Disabled = false,
+                DeleteFrequencyInSec = 600
+            }));
         }
 
         static void EnsureClusterConfiguration(IDocumentStore store)
@@ -62,6 +74,11 @@ namespace NServiceBus.Gateway.RavenDB
                 }
             }
         }
+
+        /// <summary>
+        /// The time to keep deduplication information, default value is 7 days
+        /// </summary>
+        public TimeSpan DeduplicationDataTimeToLive { get; set; } = TimeSpan.FromDays(7);
 
         ReadOnlySettings settings;
         readonly Func<IBuilder, ReadOnlySettings, IDocumentStore> documentStoreFactory;
