@@ -5,10 +5,6 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
-    <DefineConstants>NET461</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\NServiceBus.Gateway.RavenDB\NServiceBus.Gateway.RavenDB.csproj" />
   </ItemGroup>
