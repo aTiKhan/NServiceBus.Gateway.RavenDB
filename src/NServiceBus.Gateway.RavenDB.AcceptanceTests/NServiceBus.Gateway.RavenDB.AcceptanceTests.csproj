@@ -6,6 +6,10 @@
     <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
+    <DefineConstants>NET461</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\NServiceBus.Gateway.RavenDB\NServiceBus.Gateway.RavenDB.csproj" />
   </ItemGroup>
