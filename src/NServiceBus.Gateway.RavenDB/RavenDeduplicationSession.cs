@@ -57,6 +57,6 @@ namespace NServiceBus.Gateway.RavenDB
         bool disposedValue = false;
         readonly IAsyncDocumentSession session;
         readonly string messageId;
-        private readonly TimeSpan deduplicationDataTimeToLive;
+        readonly TimeSpan deduplicationDataTimeToLive;
     }
 }
