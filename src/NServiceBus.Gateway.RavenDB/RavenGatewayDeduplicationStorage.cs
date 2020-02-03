@@ -7,7 +7,7 @@ namespace NServiceBus.Gateway.RavenDB
 {
     class RavenGatewayDeduplicationStorage : IGatewayDeduplicationStorage
     {
-        public RavenGatewayDeduplicationStorage(IDocumentStore documentStore, System.TimeSpan deduplicationDataTimeToLive)
+        public RavenGatewayDeduplicationStorage(IDocumentStore documentStore, TimeSpan deduplicationDataTimeToLive)
         {
             this.documentStore = documentStore;
             this.deduplicationDataTimeToLive = deduplicationDataTimeToLive;
