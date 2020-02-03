@@ -1,12 +1,12 @@
-﻿using NServiceBus.ObjectBuilder;
-using NServiceBus.Settings;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Operations.Expiration;
-using Raven.Client.ServerWide.Commands;
-using System;
-
-namespace NServiceBus.Gateway.RavenDB
+﻿namespace NServiceBus.Gateway.RavenDB
 {
+    using NServiceBus.ObjectBuilder;
+    using NServiceBus.Settings;
+    using Raven.Client.Documents;
+    using Raven.Client.Documents.Operations.Expiration;
+    using Raven.Client.ServerWide.Commands;
+    using System;
+
     /// <summary>
     /// Configures the deduplication storage.
     /// </summary>

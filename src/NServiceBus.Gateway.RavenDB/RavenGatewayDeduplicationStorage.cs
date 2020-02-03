@@ -1,10 +1,10 @@
-﻿using NServiceBus.Extensibility;
-using Raven.Client.Documents;
-using System;
-using System.Threading.Tasks;
-
-namespace NServiceBus.Gateway.RavenDB
+﻿namespace NServiceBus.Gateway.RavenDB
 {
+    using NServiceBus.Extensibility;
+    using Raven.Client.Documents;
+    using System;
+    using System.Threading.Tasks;
+
     class RavenGatewayDeduplicationStorage : IGatewayDeduplicationStorage
     {
         public RavenGatewayDeduplicationStorage(IDocumentStore documentStore, TimeSpan deduplicationDataTimeToLive)

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace NServiceBus.Gateway.RavenDB
+﻿namespace NServiceBus.Gateway.RavenDB
 {
+    using System;
+
     class GatewayMessage
     {
         public string Id { get; set; }

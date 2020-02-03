@@ -1,10 +1,10 @@
-﻿using Raven.Client;
-using Raven.Client.Documents.Session;
-using System;
-using System.Threading.Tasks;
-
-namespace NServiceBus.Gateway.RavenDB
+﻿namespace NServiceBus.Gateway.RavenDB
 {
+    using Raven.Client;
+    using Raven.Client.Documents.Session;
+    using System;
+    using System.Threading.Tasks;
+
     sealed class RavenDeduplicationSession : IDeduplicationSession
     {
         public bool IsDuplicate { get; }
