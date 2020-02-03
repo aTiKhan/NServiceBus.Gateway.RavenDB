@@ -4,7 +4,6 @@ using Raven.Client.Documents;
 using Raven.Client.Documents.Operations.Expiration;
 using Raven.Client.ServerWide.Commands;
 using System;
-using System.Threading.Tasks;
 
 namespace NServiceBus.Gateway.RavenDB
 {
