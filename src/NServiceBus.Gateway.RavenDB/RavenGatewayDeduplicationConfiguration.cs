@@ -44,14 +44,14 @@ namespace NServiceBus.Gateway.RavenDB
             var documentStore = documentStoreFactory(builder, settings);
 
             EnsureClusterConfiguration(documentStore);
-            EnableExpirationFeature(documentStore).GetAwaiter().GetResult();
+            EnableExpirationFeature(documentStore);
 
             return new RavenGatewayDeduplicationStorage(documentStore, DeduplicationDataTimeToLive);
         }
 
-        static Task EnableExpirationFeature(IDocumentStore documentStore)
+        static void EnableExpirationFeature(IDocumentStore documentStore)
         {
-            return documentStore.Maintenance.SendAsync(new ConfigureExpirationOperation(new ExpirationConfiguration
+            documentStore.Maintenance.Send(new ConfigureExpirationOperation(new ExpirationConfiguration
             {
                 Disabled = false,
                 DeleteFrequencyInSec = 600
