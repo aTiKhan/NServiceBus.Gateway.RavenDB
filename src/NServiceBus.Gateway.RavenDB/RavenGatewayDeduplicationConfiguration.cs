@@ -31,8 +31,6 @@ namespace NServiceBus.Gateway.RavenDB
         {
             this.settings = settings;
 
-            //TODO: kick off the clean-up task (as a FeatureStartupTask)
-
             base.Setup(settings);
         }
 
