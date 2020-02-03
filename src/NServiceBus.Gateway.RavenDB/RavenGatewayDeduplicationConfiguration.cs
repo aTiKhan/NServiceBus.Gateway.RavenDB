@@ -78,7 +78,7 @@ namespace NServiceBus.Gateway.RavenDB
         /// <summary>
         /// The time to keep deduplication information, default value is 7 days
         /// </summary>
-        //ReSharper disable once AutoPropertyCanBeMadeGetOnly
+        //ReSharper disable AutoPropertyCanBeMadeGetOnly
         public TimeSpan DeduplicationDataTimeToLive { get; set; } = TimeSpan.FromDays(7);
 
         ReadOnlySettings settings;
