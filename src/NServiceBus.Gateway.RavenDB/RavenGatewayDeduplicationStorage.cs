@@ -1,6 +1,6 @@
 ﻿namespace NServiceBus.Gateway.RavenDB
 {
-    using NServiceBus.Extensibility;
+    using Extensibility;
     using Raven.Client.Documents;
     using System;
     using System.Threading.Tasks;

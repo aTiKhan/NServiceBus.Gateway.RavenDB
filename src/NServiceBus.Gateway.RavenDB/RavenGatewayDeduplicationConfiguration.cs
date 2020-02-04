@@ -1,7 +1,7 @@
 ﻿namespace NServiceBus.Gateway.RavenDB
 {
-    using NServiceBus.ObjectBuilder;
-    using NServiceBus.Settings;
+    using ObjectBuilder;
+    using Settings;
     using Raven.Client.Documents;
     using Raven.Client.Documents.Operations.Expiration;
     using Raven.Client.ServerWide.Commands;
