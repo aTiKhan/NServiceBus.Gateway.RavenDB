@@ -41,17 +41,17 @@
             var documentStore = documentStoreFactory(builder, settings);
 
             EnsureClusterConfiguration(documentStore);
-            EnableExpirationFeature(documentStore);
+            EnableExpirationFeature(documentStore, FrequencyToRunDeduplicationDataCleanup);
 
             return new RavenGatewayDeduplicationStorage(documentStore, DeduplicationDataTimeToLive);
         }
 
-        static void EnableExpirationFeature(IDocumentStore documentStore)
+        static void EnableExpirationFeature(IDocumentStore documentStore, long frequencyToRunDeduplicationDataCleanup)
         {
             documentStore.Maintenance.Send(new ConfigureExpirationOperation(new ExpirationConfiguration
             {
                 Disabled = false,
-                DeleteFrequencyInSec = 600
+                DeleteFrequencyInSec = frequencyToRunDeduplicationDataCleanup
             }));
         }
 
@@ -76,6 +76,11 @@
         /// The time to keep deduplication information, default value is 7 days
         /// </summary>
         public TimeSpan DeduplicationDataTimeToLive { get; set; } = TimeSpan.FromDays(7);
+
+        /// <summary>
+        /// Frequency, in seconds, at which to run the cleanup of deduplication data.
+        /// </summary>
+        public long FrequencyToRunDeduplicationDataCleanup { get; set; } = 600;
 
         ReadOnlySettings settings;
         readonly Func<IBuilder, ReadOnlySettings, IDocumentStore> documentStoreFactory;
