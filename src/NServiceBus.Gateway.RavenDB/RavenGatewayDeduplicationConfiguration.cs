@@ -22,10 +22,7 @@
             this.documentStoreFactory = documentStoreFactory;
         }
 
-        /// <summary>
-        /// Invoked when the endpoint configuration completed to initialize the storage or
-        ///  verify configuration before the endpoint starts.
-        /// </summary>
+        /// <inheritdoc />
         public override void Setup(ReadOnlySettings settings)
         {
             this.settings = settings;
@@ -33,9 +30,7 @@
             base.Setup(settings);
         }
 
-        /// <summary>
-        /// Creates an instance of the deduplication storage.
-        /// </summary>
+        /// <inheritdoc />
         public override IGatewayDeduplicationStorage CreateStorage(IBuilder builder)
         {
             var documentStore = documentStoreFactory(builder, settings);
