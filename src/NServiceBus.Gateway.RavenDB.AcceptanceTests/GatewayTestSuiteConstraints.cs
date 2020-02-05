@@ -26,7 +26,7 @@ namespace NServiceBus.Gateway.AcceptanceTests
             var gatewaySettings = configuration.Gateway(ravenGatewayDeduplicationConfiguration);
             configuration.GetSettings().Set(gatewaySettings);
 
-            return Task.FromResult(false);
+            return Task.CompletedTask;
         }
 
         public async Task Cleanup()
