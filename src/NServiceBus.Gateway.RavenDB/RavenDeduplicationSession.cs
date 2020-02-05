@@ -22,9 +22,9 @@
                     TimeReceived = timeReceived
                 };
 
-                await session.StoreAsync(gatewayMessage);
+                await session.StoreAsync(gatewayMessage).ConfigureAwait(false);
                 session.Advanced.GetMetadataFor(gatewayMessage)[Constants.Documents.Metadata.Expires] = expiry;
-                await session.SaveChangesAsync();
+                await session.SaveChangesAsync().ConfigureAwait(false);
             }
         }
 

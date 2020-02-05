@@ -18,7 +18,7 @@
         public async Task<IDeduplicationSession> CheckForDuplicate(string messageId, ContextBag context)
         {
             var session = documentStore.OpenAsyncSession();
-            var isDuplicate = await session.LoadAsync<GatewayMessage>(MessageIdHelper.EscapeMessageId(messageId)) != null;
+            var isDuplicate = await session.LoadAsync<GatewayMessage>(MessageIdHelper.EscapeMessageId(messageId)).ConfigureAwait(false) != null;
 
             return new RavenDeduplicationSession(session, isDuplicate, messageId, deduplicationDataTimeToLive);
         }
