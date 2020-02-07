@@ -1,10 +1,12 @@
-﻿namespace NServiceBus.Gateway.RavenDB
+﻿namespace NServiceBus
 {
+    using Gateway;
+    using Gateway.RavenDB;
     using ObjectBuilder;
-    using Settings;
     using Raven.Client.Documents;
     using Raven.Client.Documents.Operations.Expiration;
     using Raven.Client.ServerWide.Commands;
+    using Settings;
     using System;
 
     /// <summary>
