@@ -1,6 +1,5 @@
 ﻿using NServiceBus.AcceptanceTesting.Support;
 using NServiceBus.Configuration.AdvancedExtensibility;
-using NServiceBus.Gateway.RavenDB;
 using Raven.Client.Documents;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
