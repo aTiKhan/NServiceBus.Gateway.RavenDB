@@ -10,9 +10,9 @@ namespace NServiceBus.Gateway.AcceptanceTests
 {
     public partial class GatewayTestSuiteConstraints
     {
-        public Task ConfigureDeduplicationStorage(string endpointName, EndpointConfiguration configuration, RunSettings settings)
+        public Task<GatewayDeduplicationConfiguration> ConfigureDeduplicationStorage(string endpointName, EndpointConfiguration configuration, RunSettings settings)
         {
-            var ravenGatewayDeduplicationConfiguration = new RavenGatewayDeduplicationConfiguration((builder, _)=> 
+            var ravenGatewayDeduplicationConfiguration = new RavenGatewayDeduplicationConfiguration((builder, _)=>
             {
                 databaseName = Guid.NewGuid().ToString();
                 var documentStore = GetInitializedDocumentStore(databaseName);
@@ -25,7 +25,7 @@ namespace NServiceBus.Gateway.AcceptanceTests
             var gatewaySettings = configuration.Gateway(ravenGatewayDeduplicationConfiguration);
             configuration.GetSettings().Set(gatewaySettings);
 
-            return Task.CompletedTask;
+            return Task.FromResult<GatewayDeduplicationConfiguration>(ravenGatewayDeduplicationConfiguration);
         }
 
         public async Task Cleanup()
