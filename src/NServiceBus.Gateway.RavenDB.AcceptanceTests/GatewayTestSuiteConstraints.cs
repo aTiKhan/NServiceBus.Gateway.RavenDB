@@ -8,16 +8,29 @@ using System.Threading.Tasks;
 
 namespace NServiceBus.Gateway.AcceptanceTests
 {
+    using System.Collections.Generic;
+    using System.Threading;
+
     public partial class GatewayTestSuiteConstraints
     {
         public Task<GatewayDeduplicationConfiguration> ConfigureDeduplicationStorage(string endpointName, EndpointConfiguration configuration, RunSettings settings)
         {
-            var ravenGatewayDeduplicationConfiguration = new RavenGatewayDeduplicationConfiguration((builder, _)=>
+            var ravenGatewayDeduplicationConfiguration = new RavenGatewayDeduplicationConfiguration((builder, _) =>
             {
-                databaseName = Guid.NewGuid().ToString();
+                var databaseName = Guid.NewGuid().ToString();
                 var documentStore = GetInitializedDocumentStore(databaseName);
 
                 documentStore.Maintenance.Server.Send(new CreateDatabaseOperation(new DatabaseRecord(databaseName)));
+
+                try
+                {
+                    semaphoreSlim.Wait();
+                    databases.Add(databaseName);
+                }
+                finally
+                {
+                    semaphoreSlim.Release();
+                }
 
                 return documentStore;
             });
@@ -30,33 +43,46 @@ namespace NServiceBus.Gateway.AcceptanceTests
 
         public async Task Cleanup()
         {
-            // Periodically the delete will throw an exception because Raven has the database locked
-            // To solve this we have a retry loop with a delay
-            var triesLeft = 3;
-
-            while (triesLeft-- > 0)
+            await semaphoreSlim.WaitAsync();
+            try
             {
-                try
+                foreach (var databaseName in databases)
                 {
-                    // We are using a new store because the global one is disposed of before cleanup
-                    using (var storeForDeletion = GetInitializedDocumentStore(databaseName))
+                    // Periodically the delete will throw an exception because Raven has the database locked
+                    // To solve this we have a retry loop with a delay
+                    var triesLeft = 3;
+
+                    while (triesLeft-- > 0)
                     {
-                        storeForDeletion.Maintenance.Server.Send(new DeleteDatabasesOperation(storeForDeletion.Database, hardDelete: true));
-                        break;
-                    }
-                }
-                catch
-                {
-                    if (triesLeft == 0)
-                    {
-                        throw;
+                        try
+                        {
+                            // We are using a new store because the global one is disposed of before cleanup
+                            using (var storeForDeletion = GetInitializedDocumentStore(databaseName))
+                            {
+                                storeForDeletion.Maintenance.Server.Send(new DeleteDatabasesOperation(storeForDeletion.Database, hardDelete: true));
+                                break;
+                            }
+                        }
+                        catch
+                        {
+                            if (triesLeft == 0)
+                            {
+                                throw;
+                            }
+
+                            await Task.Delay(250);
+                        }
                     }
 
-                    await Task.Delay(250);
+                    Console.WriteLine("Deleted '{0}' database", databaseName);
                 }
+
+                databases.Clear();
             }
-
-            Console.WriteLine("Deleted '{0}' database", databaseName);
+            finally
+            {
+                semaphoreSlim.Release();
+            }
         }
 
         static DocumentStore GetInitializedDocumentStore(string defaultDatabase)
@@ -78,6 +104,7 @@ namespace NServiceBus.Gateway.AcceptanceTests
             return documentStore;
         }
 
-        string databaseName;
+        static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+        List<string> databases = new List<string>();
     }
 }
