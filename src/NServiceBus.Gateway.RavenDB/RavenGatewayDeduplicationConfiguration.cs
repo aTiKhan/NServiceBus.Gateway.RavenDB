@@ -2,7 +2,6 @@
 {
     using Gateway;
     using Gateway.RavenDB;
-    using ObjectBuilder;
     using Raven.Client.Documents;
     using Raven.Client.Documents.Operations.Expiration;
     using Raven.Client.ServerWide.Commands;
@@ -17,7 +16,7 @@
         /// <summary>
         /// Initialize a new instance of the RavenDB gateway deduplication configuration
         /// </summary>
-        public RavenGatewayDeduplicationConfiguration(Func<IBuilder, ReadOnlySettings, IDocumentStore> documentStoreFactory)
+        public RavenGatewayDeduplicationConfiguration(Func<IServiceProvider, ReadOnlySettings, IDocumentStore> documentStoreFactory)
         {
             Guard.AgainstNull(nameof(documentStoreFactory), documentStoreFactory);
 
@@ -33,7 +32,7 @@
         }
 
         /// <inheritdoc />
-        public override IGatewayDeduplicationStorage CreateStorage(IBuilder builder)
+        public override IGatewayDeduplicationStorage CreateStorage(IServiceProvider builder)
         {
             var documentStore = documentStoreFactory(builder, settings);
 
@@ -80,6 +79,6 @@
         public long FrequencyToRunDeduplicationDataCleanup { get; set; } = 600;
 
         ReadOnlySettings settings;
-        readonly Func<IBuilder, ReadOnlySettings, IDocumentStore> documentStoreFactory;
+        readonly Func<IServiceProvider, ReadOnlySettings, IDocumentStore> documentStoreFactory;
     }
 }
