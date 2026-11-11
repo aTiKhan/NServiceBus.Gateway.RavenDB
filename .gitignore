@@ -1,11 +1,13 @@
-nugets
-deploy
+/assets
+/binaries
+/deploy
+/nugets
 build32
-binaries
 *.vshost.*
 .nu
 _UpgradeReport.*
 *.cache
+Thumbs.db
 *~
 *.swp
 results
@@ -49,6 +51,7 @@ installer/ServiceControl-cache
 *.userosscache
 *.sln.docstates
 .vs/
+local.settings.json
 
 # mac temp file ignore
 .DS_Store
@@ -64,6 +67,7 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+*.binlog
 
 # Roslyn cache directories
 *.ide/
@@ -83,6 +87,7 @@ _NCrunch_*
 # ReSharper is a .NET coding add-in
 _ReSharper*/
 *.[Rr]e[Ss]harper
+*.DotSettings
 *.DotSettings.user
 
 src/scaffolding.config
@@ -93,3 +98,10 @@ src/scaffolding.config
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+# Visual Studio Code
+.vscode
+
+# Files use to contain envvar values, used by tools like direnv
+.env
+.envrc
